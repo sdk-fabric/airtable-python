@@ -1,0 +1,8 @@
+{
+  "type": "client-python",
+  "require": {
+    "sdkfabric/airtable": {
+      "target": "./src"
+    }
+  }
+}
