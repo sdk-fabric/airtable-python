@@ -11,6 +11,7 @@ from typing import List
 from .meta_tag import MetaTag
 from .records_tag import RecordsTag
 from .fields_tag import FieldsTag
+from .table_tag import TableTag
 
 class Client(sdkgen.ClientAbstract):
     def __init__(self, base_url: str, credentials: sdkgen.CredentialsInterface):
@@ -30,6 +31,12 @@ class Client(sdkgen.ClientAbstract):
 
     def fields(self) -> FieldsTag:
         return FieldsTag(
+            self.http_client,
+            self.parser
+        )
+
+    def table(self) -> TableTag:
+        return TableTag(
             self.http_client,
             self.parser
         )
