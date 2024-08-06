@@ -8,6 +8,7 @@ import sdkgen
 from requests import RequestException
 from typing import List
 
+from .error_exception import ErrorException
 from .field import Field
 
 class FieldsTag(sdkgen.TagAbstract):
@@ -35,6 +36,14 @@ class FieldsTag(sdkgen.TagAbstract):
             if response.status_code >= 200 and response.status_code < 300:
                 return Field.model_validate_json(json_data=response.content)
 
+            if response.status_code == 400:
+                raise ErrorException(response.content)
+            if response.status_code == 403:
+                raise ErrorException(response.content)
+            if response.status_code == 404:
+                raise ErrorException(response.content)
+            if response.status_code == 500:
+                raise ErrorException(response.content)
 
             raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
         except RequestException as e:
@@ -61,6 +70,14 @@ class FieldsTag(sdkgen.TagAbstract):
             if response.status_code >= 200 and response.status_code < 300:
                 return Field.model_validate_json(json_data=response.content)
 
+            if response.status_code == 400:
+                raise ErrorException(response.content)
+            if response.status_code == 403:
+                raise ErrorException(response.content)
+            if response.status_code == 404:
+                raise ErrorException(response.content)
+            if response.status_code == 500:
+                raise ErrorException(response.content)
 
             raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
         except RequestException as e:

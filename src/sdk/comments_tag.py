@@ -11,6 +11,7 @@ from typing import List
 from .comment import Comment
 from .comment_collection import CommentCollection
 from .comment_delete_response import CommentDeleteResponse
+from .error_exception import ErrorException
 
 class CommentsTag(sdkgen.TagAbstract):
     def __init__(self, http_client: requests.Session, parser: sdkgen.Parser):
@@ -37,6 +38,14 @@ class CommentsTag(sdkgen.TagAbstract):
             if response.status_code >= 200 and response.status_code < 300:
                 return CommentCollection.model_validate_json(json_data=response.content)
 
+            if response.status_code == 400:
+                raise ErrorException(response.content)
+            if response.status_code == 403:
+                raise ErrorException(response.content)
+            if response.status_code == 404:
+                raise ErrorException(response.content)
+            if response.status_code == 500:
+                raise ErrorException(response.content)
 
             raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
         except RequestException as e:
@@ -63,6 +72,14 @@ class CommentsTag(sdkgen.TagAbstract):
             if response.status_code >= 200 and response.status_code < 300:
                 return Comment.model_validate_json(json_data=response.content)
 
+            if response.status_code == 400:
+                raise ErrorException(response.content)
+            if response.status_code == 403:
+                raise ErrorException(response.content)
+            if response.status_code == 404:
+                raise ErrorException(response.content)
+            if response.status_code == 500:
+                raise ErrorException(response.content)
 
             raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
         except RequestException as e:
@@ -90,6 +107,14 @@ class CommentsTag(sdkgen.TagAbstract):
             if response.status_code >= 200 and response.status_code < 300:
                 return Comment.model_validate_json(json_data=response.content)
 
+            if response.status_code == 400:
+                raise ErrorException(response.content)
+            if response.status_code == 403:
+                raise ErrorException(response.content)
+            if response.status_code == 404:
+                raise ErrorException(response.content)
+            if response.status_code == 500:
+                raise ErrorException(response.content)
 
             raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
         except RequestException as e:
@@ -116,6 +141,14 @@ class CommentsTag(sdkgen.TagAbstract):
             if response.status_code >= 200 and response.status_code < 300:
                 return CommentDeleteResponse.model_validate_json(json_data=response.content)
 
+            if response.status_code == 400:
+                raise ErrorException(response.content)
+            if response.status_code == 403:
+                raise ErrorException(response.content)
+            if response.status_code == 404:
+                raise ErrorException(response.content)
+            if response.status_code == 500:
+                raise ErrorException(response.content)
 
             raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
         except RequestException as e:
