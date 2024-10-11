@@ -10,6 +10,7 @@ from typing import List
 
 from .bulk_update_request import BulkUpdateRequest
 from .bulk_update_response import BulkUpdateResponse
+from .error_exception import ErrorException
 from .record import Record
 from .record_collection import RecordCollection
 
@@ -52,6 +53,14 @@ class RecordsTag(sdkgen.TagAbstract):
             if response.status_code >= 200 and response.status_code < 300:
                 return RecordCollection.model_validate_json(json_data=response.content)
 
+            if response.status_code == 400:
+                raise ErrorException(response.content)
+            if response.status_code == 403:
+                raise ErrorException(response.content)
+            if response.status_code == 404:
+                raise ErrorException(response.content)
+            if response.status_code == 500:
+                raise ErrorException(response.content)
 
             raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
         except RequestException as e:
@@ -80,6 +89,50 @@ class RecordsTag(sdkgen.TagAbstract):
             if response.status_code >= 200 and response.status_code < 300:
                 return Record.model_validate_json(json_data=response.content)
 
+            if response.status_code == 400:
+                raise ErrorException(response.content)
+            if response.status_code == 403:
+                raise ErrorException(response.content)
+            if response.status_code == 404:
+                raise ErrorException(response.content)
+            if response.status_code == 500:
+                raise ErrorException(response.content)
+
+            raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
+        except RequestException as e:
+            raise sdkgen.ClientException("An unknown error occurred: " + str(e))
+
+    def create(self, base_id: str, table_id_or_name: str, payload: RecordCollection) -> RecordCollection:
+        """
+        Creates multiple records. Note that table names and table ids can be used interchangeably. We recommend using table IDs so you don&#039;t need to modify your API request when your table name changes.
+        """
+        try:
+            path_params = {}
+            path_params["baseId"] = base_id
+            path_params["tableIdOrName"] = table_id_or_name
+
+            query_params = {}
+
+            query_struct_names = []
+
+            url = self.parser.url("/v0/:baseId/:tableIdOrName", path_params)
+
+            headers = {}
+            headers["Content-Type"] = "application/json"
+
+            response = self.http_client.post(url, headers=headers, params=self.parser.query(query_params, query_struct_names), json=payload.model_dump(by_alias=True))
+
+            if response.status_code >= 200 and response.status_code < 300:
+                return RecordCollection.model_validate_json(json_data=response.content)
+
+            if response.status_code == 400:
+                raise ErrorException(response.content)
+            if response.status_code == 403:
+                raise ErrorException(response.content)
+            if response.status_code == 404:
+                raise ErrorException(response.content)
+            if response.status_code == 500:
+                raise ErrorException(response.content)
 
             raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
         except RequestException as e:
@@ -109,6 +162,14 @@ class RecordsTag(sdkgen.TagAbstract):
             if response.status_code >= 200 and response.status_code < 300:
                 return Record.model_validate_json(json_data=response.content)
 
+            if response.status_code == 400:
+                raise ErrorException(response.content)
+            if response.status_code == 403:
+                raise ErrorException(response.content)
+            if response.status_code == 404:
+                raise ErrorException(response.content)
+            if response.status_code == 500:
+                raise ErrorException(response.content)
 
             raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
         except RequestException as e:
@@ -137,6 +198,14 @@ class RecordsTag(sdkgen.TagAbstract):
             if response.status_code >= 200 and response.status_code < 300:
                 return BulkUpdateResponse.model_validate_json(json_data=response.content)
 
+            if response.status_code == 400:
+                raise ErrorException(response.content)
+            if response.status_code == 403:
+                raise ErrorException(response.content)
+            if response.status_code == 404:
+                raise ErrorException(response.content)
+            if response.status_code == 500:
+                raise ErrorException(response.content)
 
             raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
         except RequestException as e:
@@ -166,6 +235,14 @@ class RecordsTag(sdkgen.TagAbstract):
             if response.status_code >= 200 and response.status_code < 300:
                 return Record.model_validate_json(json_data=response.content)
 
+            if response.status_code == 400:
+                raise ErrorException(response.content)
+            if response.status_code == 403:
+                raise ErrorException(response.content)
+            if response.status_code == 404:
+                raise ErrorException(response.content)
+            if response.status_code == 500:
+                raise ErrorException(response.content)
 
             raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
         except RequestException as e:
@@ -194,6 +271,14 @@ class RecordsTag(sdkgen.TagAbstract):
             if response.status_code >= 200 and response.status_code < 300:
                 return BulkUpdateResponse.model_validate_json(json_data=response.content)
 
+            if response.status_code == 400:
+                raise ErrorException(response.content)
+            if response.status_code == 403:
+                raise ErrorException(response.content)
+            if response.status_code == 404:
+                raise ErrorException(response.content)
+            if response.status_code == 500:
+                raise ErrorException(response.content)
 
             raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
         except RequestException as e:
