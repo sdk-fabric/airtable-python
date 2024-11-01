@@ -7,9 +7,13 @@ import requests
 import sdkgen
 from requests import RequestException
 from typing import List
+from typing import Dict
+from typing import Any
+from urllib.parse import parse_qs
 
 from .bulk_update_request import BulkUpdateRequest
 from .bulk_update_response import BulkUpdateResponse
+from .delete_response import DeleteResponse
 from .error_exception import ErrorException
 from .record import Record
 from .record_collection import RecordCollection
@@ -25,46 +29,64 @@ class RecordsTag(sdkgen.TagAbstract):
         """
         try:
             path_params = {}
-            path_params["baseId"] = base_id
-            path_params["tableIdOrName"] = table_id_or_name
+            path_params['baseId'] = base_id
+            path_params['tableIdOrName'] = table_id_or_name
 
             query_params = {}
-            query_params["timeZone"] = time_zone
-            query_params["userLocale"] = user_locale
-            query_params["pageSize"] = page_size
-            query_params["maxRecords"] = max_records
-            query_params["offset"] = offset
-            query_params["view"] = view
-            query_params["sort"] = sort
-            query_params["filterByFormula"] = filter_by_formula
-            query_params["cellFormat"] = cell_format
-            query_params["fields"] = fields
-            query_params["returnFieldsByFieldId"] = return_fields_by_field_id
-            query_params["recordMetadata"] = record_metadata
+            query_params['timeZone'] = time_zone
+            query_params['userLocale'] = user_locale
+            query_params['pageSize'] = page_size
+            query_params['maxRecords'] = max_records
+            query_params['offset'] = offset
+            query_params['view'] = view
+            query_params['sort'] = sort
+            query_params['filterByFormula'] = filter_by_formula
+            query_params['cellFormat'] = cell_format
+            query_params['fields'] = fields
+            query_params['returnFieldsByFieldId'] = return_fields_by_field_id
+            query_params['recordMetadata'] = record_metadata
 
             query_struct_names = []
 
-            url = self.parser.url("/v0/:baseId/:tableIdOrName", path_params)
+            url = self.parser.url('/v0/:baseId/:tableIdOrName', path_params)
 
-            headers = {}
+            options = {}
+            options['headers'] = {}
+            options['params'] = self.parser.query(query_params, query_struct_names)
 
-            response = self.http_client.get(url, headers=headers, params=self.parser.query(query_params, query_struct_names))
+
+
+            response = self.http_client.request('GET', url, **options)
 
             if response.status_code >= 200 and response.status_code < 300:
-                return RecordCollection.model_validate_json(json_data=response.content)
+                data = RecordCollection.model_validate_json(json_data=response.content)
 
-            if response.status_code == 400:
-                raise ErrorException(response.content)
-            if response.status_code == 403:
-                raise ErrorException(response.content)
-            if response.status_code == 404:
-                raise ErrorException(response.content)
-            if response.status_code == 500:
-                raise ErrorException(response.content)
+                return data
 
-            raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
+            statusCode = response.status_code
+            if statusCode == 400:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 403:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 404:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 500:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            raise sdkgen.UnknownStatusCodeException('The server returned an unknown status code: ' + str(statusCode))
         except RequestException as e:
-            raise sdkgen.ClientException("An unknown error occurred: " + str(e))
+            raise sdkgen.ClientException('An unknown error occurred: ' + str(e))
 
     def get(self, base_id: str, table_id_or_name: str, record_id: str) -> Record:
         """
@@ -72,35 +94,53 @@ class RecordsTag(sdkgen.TagAbstract):
         """
         try:
             path_params = {}
-            path_params["baseId"] = base_id
-            path_params["tableIdOrName"] = table_id_or_name
-            path_params["recordId"] = record_id
+            path_params['baseId'] = base_id
+            path_params['tableIdOrName'] = table_id_or_name
+            path_params['recordId'] = record_id
 
             query_params = {}
 
             query_struct_names = []
 
-            url = self.parser.url("/v0/:baseId/:tableIdOrName/:recordId", path_params)
+            url = self.parser.url('/v0/:baseId/:tableIdOrName/:recordId', path_params)
 
-            headers = {}
+            options = {}
+            options['headers'] = {}
+            options['params'] = self.parser.query(query_params, query_struct_names)
 
-            response = self.http_client.get(url, headers=headers, params=self.parser.query(query_params, query_struct_names))
+
+
+            response = self.http_client.request('GET', url, **options)
 
             if response.status_code >= 200 and response.status_code < 300:
-                return Record.model_validate_json(json_data=response.content)
+                data = Record.model_validate_json(json_data=response.content)
 
-            if response.status_code == 400:
-                raise ErrorException(response.content)
-            if response.status_code == 403:
-                raise ErrorException(response.content)
-            if response.status_code == 404:
-                raise ErrorException(response.content)
-            if response.status_code == 500:
-                raise ErrorException(response.content)
+                return data
 
-            raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
+            statusCode = response.status_code
+            if statusCode == 400:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 403:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 404:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 500:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            raise sdkgen.UnknownStatusCodeException('The server returned an unknown status code: ' + str(statusCode))
         except RequestException as e:
-            raise sdkgen.ClientException("An unknown error occurred: " + str(e))
+            raise sdkgen.ClientException('An unknown error occurred: ' + str(e))
 
     def create(self, base_id: str, table_id_or_name: str, payload: RecordCollection) -> RecordCollection:
         """
@@ -108,35 +148,54 @@ class RecordsTag(sdkgen.TagAbstract):
         """
         try:
             path_params = {}
-            path_params["baseId"] = base_id
-            path_params["tableIdOrName"] = table_id_or_name
+            path_params['baseId'] = base_id
+            path_params['tableIdOrName'] = table_id_or_name
 
             query_params = {}
 
             query_struct_names = []
 
-            url = self.parser.url("/v0/:baseId/:tableIdOrName", path_params)
+            url = self.parser.url('/v0/:baseId/:tableIdOrName', path_params)
 
-            headers = {}
-            headers["Content-Type"] = "application/json"
+            options = {}
+            options['headers'] = {}
+            options['params'] = self.parser.query(query_params, query_struct_names)
 
-            response = self.http_client.post(url, headers=headers, params=self.parser.query(query_params, query_struct_names), json=payload.model_dump(by_alias=True))
+            options['json'] = payload.model_dump(by_alias=True)
+
+            options['headers']['Content-Type'] = 'application/json'
+
+            response = self.http_client.request('POST', url, **options)
 
             if response.status_code >= 200 and response.status_code < 300:
-                return RecordCollection.model_validate_json(json_data=response.content)
+                data = RecordCollection.model_validate_json(json_data=response.content)
 
-            if response.status_code == 400:
-                raise ErrorException(response.content)
-            if response.status_code == 403:
-                raise ErrorException(response.content)
-            if response.status_code == 404:
-                raise ErrorException(response.content)
-            if response.status_code == 500:
-                raise ErrorException(response.content)
+                return data
 
-            raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
+            statusCode = response.status_code
+            if statusCode == 400:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 403:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 404:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 500:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            raise sdkgen.UnknownStatusCodeException('The server returned an unknown status code: ' + str(statusCode))
         except RequestException as e:
-            raise sdkgen.ClientException("An unknown error occurred: " + str(e))
+            raise sdkgen.ClientException('An unknown error occurred: ' + str(e))
 
     def replace(self, base_id: str, table_id_or_name: str, record_id: str, payload: Record) -> Record:
         """
@@ -144,36 +203,55 @@ class RecordsTag(sdkgen.TagAbstract):
         """
         try:
             path_params = {}
-            path_params["baseId"] = base_id
-            path_params["tableIdOrName"] = table_id_or_name
-            path_params["recordId"] = record_id
+            path_params['baseId'] = base_id
+            path_params['tableIdOrName'] = table_id_or_name
+            path_params['recordId'] = record_id
 
             query_params = {}
 
             query_struct_names = []
 
-            url = self.parser.url("/v0/:baseId/:tableIdOrName/:recordId", path_params)
+            url = self.parser.url('/v0/:baseId/:tableIdOrName/:recordId', path_params)
 
-            headers = {}
-            headers["Content-Type"] = "application/json"
+            options = {}
+            options['headers'] = {}
+            options['params'] = self.parser.query(query_params, query_struct_names)
 
-            response = self.http_client.put(url, headers=headers, params=self.parser.query(query_params, query_struct_names), json=payload.model_dump(by_alias=True))
+            options['json'] = payload.model_dump(by_alias=True)
+
+            options['headers']['Content-Type'] = 'application/json'
+
+            response = self.http_client.request('PUT', url, **options)
 
             if response.status_code >= 200 and response.status_code < 300:
-                return Record.model_validate_json(json_data=response.content)
+                data = Record.model_validate_json(json_data=response.content)
 
-            if response.status_code == 400:
-                raise ErrorException(response.content)
-            if response.status_code == 403:
-                raise ErrorException(response.content)
-            if response.status_code == 404:
-                raise ErrorException(response.content)
-            if response.status_code == 500:
-                raise ErrorException(response.content)
+                return data
 
-            raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
+            statusCode = response.status_code
+            if statusCode == 400:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 403:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 404:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 500:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            raise sdkgen.UnknownStatusCodeException('The server returned an unknown status code: ' + str(statusCode))
         except RequestException as e:
-            raise sdkgen.ClientException("An unknown error occurred: " + str(e))
+            raise sdkgen.ClientException('An unknown error occurred: ' + str(e))
 
     def replace_all(self, base_id: str, table_id_or_name: str, payload: BulkUpdateRequest) -> BulkUpdateResponse:
         """
@@ -181,35 +259,54 @@ class RecordsTag(sdkgen.TagAbstract):
         """
         try:
             path_params = {}
-            path_params["baseId"] = base_id
-            path_params["tableIdOrName"] = table_id_or_name
+            path_params['baseId'] = base_id
+            path_params['tableIdOrName'] = table_id_or_name
 
             query_params = {}
 
             query_struct_names = []
 
-            url = self.parser.url("/v0/:baseId/:tableIdOrName", path_params)
+            url = self.parser.url('/v0/:baseId/:tableIdOrName', path_params)
 
-            headers = {}
-            headers["Content-Type"] = "application/json"
+            options = {}
+            options['headers'] = {}
+            options['params'] = self.parser.query(query_params, query_struct_names)
 
-            response = self.http_client.put(url, headers=headers, params=self.parser.query(query_params, query_struct_names), json=payload.model_dump(by_alias=True))
+            options['json'] = payload.model_dump(by_alias=True)
+
+            options['headers']['Content-Type'] = 'application/json'
+
+            response = self.http_client.request('PUT', url, **options)
 
             if response.status_code >= 200 and response.status_code < 300:
-                return BulkUpdateResponse.model_validate_json(json_data=response.content)
+                data = BulkUpdateResponse.model_validate_json(json_data=response.content)
 
-            if response.status_code == 400:
-                raise ErrorException(response.content)
-            if response.status_code == 403:
-                raise ErrorException(response.content)
-            if response.status_code == 404:
-                raise ErrorException(response.content)
-            if response.status_code == 500:
-                raise ErrorException(response.content)
+                return data
 
-            raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
+            statusCode = response.status_code
+            if statusCode == 400:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 403:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 404:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 500:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            raise sdkgen.UnknownStatusCodeException('The server returned an unknown status code: ' + str(statusCode))
         except RequestException as e:
-            raise sdkgen.ClientException("An unknown error occurred: " + str(e))
+            raise sdkgen.ClientException('An unknown error occurred: ' + str(e))
 
     def update(self, base_id: str, table_id_or_name: str, record_id: str, payload: Record) -> Record:
         """
@@ -217,36 +314,55 @@ class RecordsTag(sdkgen.TagAbstract):
         """
         try:
             path_params = {}
-            path_params["baseId"] = base_id
-            path_params["tableIdOrName"] = table_id_or_name
-            path_params["recordId"] = record_id
+            path_params['baseId'] = base_id
+            path_params['tableIdOrName'] = table_id_or_name
+            path_params['recordId'] = record_id
 
             query_params = {}
 
             query_struct_names = []
 
-            url = self.parser.url("/v0/:baseId/:tableIdOrName/:recordId", path_params)
+            url = self.parser.url('/v0/:baseId/:tableIdOrName/:recordId', path_params)
 
-            headers = {}
-            headers["Content-Type"] = "application/json"
+            options = {}
+            options['headers'] = {}
+            options['params'] = self.parser.query(query_params, query_struct_names)
 
-            response = self.http_client.patch(url, headers=headers, params=self.parser.query(query_params, query_struct_names), json=payload.model_dump(by_alias=True))
+            options['json'] = payload.model_dump(by_alias=True)
+
+            options['headers']['Content-Type'] = 'application/json'
+
+            response = self.http_client.request('PATCH', url, **options)
 
             if response.status_code >= 200 and response.status_code < 300:
-                return Record.model_validate_json(json_data=response.content)
+                data = Record.model_validate_json(json_data=response.content)
 
-            if response.status_code == 400:
-                raise ErrorException(response.content)
-            if response.status_code == 403:
-                raise ErrorException(response.content)
-            if response.status_code == 404:
-                raise ErrorException(response.content)
-            if response.status_code == 500:
-                raise ErrorException(response.content)
+                return data
 
-            raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
+            statusCode = response.status_code
+            if statusCode == 400:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 403:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 404:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 500:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            raise sdkgen.UnknownStatusCodeException('The server returned an unknown status code: ' + str(statusCode))
         except RequestException as e:
-            raise sdkgen.ClientException("An unknown error occurred: " + str(e))
+            raise sdkgen.ClientException('An unknown error occurred: ' + str(e))
 
     def update_all(self, base_id: str, table_id_or_name: str, payload: BulkUpdateRequest) -> BulkUpdateResponse:
         """
@@ -254,34 +370,88 @@ class RecordsTag(sdkgen.TagAbstract):
         """
         try:
             path_params = {}
-            path_params["baseId"] = base_id
-            path_params["tableIdOrName"] = table_id_or_name
+            path_params['baseId'] = base_id
+            path_params['tableIdOrName'] = table_id_or_name
 
             query_params = {}
 
             query_struct_names = []
 
-            url = self.parser.url("/v0/:baseId/:tableIdOrName", path_params)
+            url = self.parser.url('/v0/:baseId/:tableIdOrName', path_params)
 
-            headers = {}
-            headers["Content-Type"] = "application/json"
+            options = {}
+            options['headers'] = {}
+            options['params'] = self.parser.query(query_params, query_struct_names)
 
-            response = self.http_client.patch(url, headers=headers, params=self.parser.query(query_params, query_struct_names), json=payload.model_dump(by_alias=True))
+            options['json'] = payload.model_dump(by_alias=True)
+
+            options['headers']['Content-Type'] = 'application/json'
+
+            response = self.http_client.request('PATCH', url, **options)
 
             if response.status_code >= 200 and response.status_code < 300:
-                return BulkUpdateResponse.model_validate_json(json_data=response.content)
+                data = BulkUpdateResponse.model_validate_json(json_data=response.content)
 
-            if response.status_code == 400:
-                raise ErrorException(response.content)
-            if response.status_code == 403:
-                raise ErrorException(response.content)
-            if response.status_code == 404:
-                raise ErrorException(response.content)
-            if response.status_code == 500:
-                raise ErrorException(response.content)
+                return data
 
-            raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
+            statusCode = response.status_code
+            if statusCode == 400:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 403:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 404:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 500:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            raise sdkgen.UnknownStatusCodeException('The server returned an unknown status code: ' + str(statusCode))
         except RequestException as e:
-            raise sdkgen.ClientException("An unknown error occurred: " + str(e))
+            raise sdkgen.ClientException('An unknown error occurred: ' + str(e))
+
+    def delete(self, base_id: str, table_id_or_name: str, record_id: str) -> DeleteResponse:
+        """
+        Deletes a single record
+        """
+        try:
+            path_params = {}
+            path_params['baseId'] = base_id
+            path_params['tableIdOrName'] = table_id_or_name
+            path_params['recordId'] = record_id
+
+            query_params = {}
+
+            query_struct_names = []
+
+            url = self.parser.url('/v0/:baseId/:tableIdOrName/:recordId', path_params)
+
+            options = {}
+            options['headers'] = {}
+            options['params'] = self.parser.query(query_params, query_struct_names)
+
+
+
+            response = self.http_client.request('DELETE', url, **options)
+
+            if response.status_code >= 200 and response.status_code < 300:
+                data = DeleteResponse.model_validate_json(json_data=response.content)
+
+                return data
+
+            statusCode = response.status_code
+            raise sdkgen.UnknownStatusCodeException('The server returned an unknown status code: ' + str(statusCode))
+        except RequestException as e:
+            raise sdkgen.ClientException('An unknown error occurred: ' + str(e))
+
 
 

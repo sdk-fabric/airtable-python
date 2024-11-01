@@ -7,6 +7,9 @@ import requests
 import sdkgen
 from requests import RequestException
 from typing import List
+from typing import Dict
+from typing import Any
+from urllib.parse import parse_qs
 
 from .meta_tag import MetaTag
 from .records_tag import RecordsTag
@@ -54,3 +57,7 @@ class Client(sdkgen.ClientAbstract):
     def build(token: str):
         return Client("https://api.airtable.com/", sdkgen.HttpBearer(token))
 
+
+    @staticmethod
+    def buildAnonymous():
+        return Client("https://api.airtable.com/", sdkgen.Anonymous())

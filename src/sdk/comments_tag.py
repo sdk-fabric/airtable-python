@@ -7,10 +7,13 @@ import requests
 import sdkgen
 from requests import RequestException
 from typing import List
+from typing import Dict
+from typing import Any
+from urllib.parse import parse_qs
 
 from .comment import Comment
 from .comment_collection import CommentCollection
-from .comment_delete_response import CommentDeleteResponse
+from .delete_response import DeleteResponse
 from .error_exception import ErrorException
 
 class CommentsTag(sdkgen.TagAbstract):
@@ -19,139 +22,226 @@ class CommentsTag(sdkgen.TagAbstract):
 
 
     def get_all(self, base_id: str, table_id_or_name: str, record_id: str) -> CommentCollection:
+        """
+        Returns a list of comments for the record from newest to oldest.
+        """
         try:
             path_params = {}
-            path_params["baseId"] = base_id
-            path_params["tableIdOrName"] = table_id_or_name
-            path_params["recordId"] = record_id
+            path_params['baseId'] = base_id
+            path_params['tableIdOrName'] = table_id_or_name
+            path_params['recordId'] = record_id
 
             query_params = {}
 
             query_struct_names = []
 
-            url = self.parser.url("/v0/:baseId/:tableIdOrName/:recordId/comments", path_params)
+            url = self.parser.url('/v0/:baseId/:tableIdOrName/:recordId/comments', path_params)
 
-            headers = {}
+            options = {}
+            options['headers'] = {}
+            options['params'] = self.parser.query(query_params, query_struct_names)
 
-            response = self.http_client.get(url, headers=headers, params=self.parser.query(query_params, query_struct_names))
+
+
+            response = self.http_client.request('GET', url, **options)
 
             if response.status_code >= 200 and response.status_code < 300:
-                return CommentCollection.model_validate_json(json_data=response.content)
+                data = CommentCollection.model_validate_json(json_data=response.content)
 
-            if response.status_code == 400:
-                raise ErrorException(response.content)
-            if response.status_code == 403:
-                raise ErrorException(response.content)
-            if response.status_code == 404:
-                raise ErrorException(response.content)
-            if response.status_code == 500:
-                raise ErrorException(response.content)
+                return data
 
-            raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
+            statusCode = response.status_code
+            if statusCode == 400:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 403:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 404:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 500:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            raise sdkgen.UnknownStatusCodeException('The server returned an unknown status code: ' + str(statusCode))
         except RequestException as e:
-            raise sdkgen.ClientException("An unknown error occurred: " + str(e))
+            raise sdkgen.ClientException('An unknown error occurred: ' + str(e))
 
     def create(self, base_id: str, table_id_or_name: str, record_id: str, payload: Comment) -> Comment:
+        """
+        Creates a comment on a record. User mentioned is supported.
+        """
         try:
             path_params = {}
-            path_params["baseId"] = base_id
-            path_params["tableIdOrName"] = table_id_or_name
-            path_params["recordId"] = record_id
+            path_params['baseId'] = base_id
+            path_params['tableIdOrName'] = table_id_or_name
+            path_params['recordId'] = record_id
 
             query_params = {}
 
             query_struct_names = []
 
-            url = self.parser.url("/v0/:baseId/:tableIdOrName/:recordId/comments", path_params)
+            url = self.parser.url('/v0/:baseId/:tableIdOrName/:recordId/comments', path_params)
 
-            headers = {}
-            headers["Content-Type"] = "application/json"
+            options = {}
+            options['headers'] = {}
+            options['params'] = self.parser.query(query_params, query_struct_names)
 
-            response = self.http_client.post(url, headers=headers, params=self.parser.query(query_params, query_struct_names), json=payload.model_dump(by_alias=True))
+            options['json'] = payload.model_dump(by_alias=True)
+
+            options['headers']['Content-Type'] = 'application/json'
+
+            response = self.http_client.request('POST', url, **options)
 
             if response.status_code >= 200 and response.status_code < 300:
-                return Comment.model_validate_json(json_data=response.content)
+                data = Comment.model_validate_json(json_data=response.content)
 
-            if response.status_code == 400:
-                raise ErrorException(response.content)
-            if response.status_code == 403:
-                raise ErrorException(response.content)
-            if response.status_code == 404:
-                raise ErrorException(response.content)
-            if response.status_code == 500:
-                raise ErrorException(response.content)
+                return data
 
-            raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
+            statusCode = response.status_code
+            if statusCode == 400:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 403:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 404:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 500:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            raise sdkgen.UnknownStatusCodeException('The server returned an unknown status code: ' + str(statusCode))
         except RequestException as e:
-            raise sdkgen.ClientException("An unknown error occurred: " + str(e))
+            raise sdkgen.ClientException('An unknown error occurred: ' + str(e))
 
     def update(self, base_id: str, table_id_or_name: str, record_id: str, row_comment_id: str, payload: Comment) -> Comment:
+        """
+        Updates a comment on a record. API users can only update comments they have created. User mentioned is supported.
+        """
         try:
             path_params = {}
-            path_params["baseId"] = base_id
-            path_params["tableIdOrName"] = table_id_or_name
-            path_params["recordId"] = record_id
-            path_params["rowCommentId"] = row_comment_id
+            path_params['baseId'] = base_id
+            path_params['tableIdOrName'] = table_id_or_name
+            path_params['recordId'] = record_id
+            path_params['rowCommentId'] = row_comment_id
 
             query_params = {}
 
             query_struct_names = []
 
-            url = self.parser.url("/v0/:baseId/:tableIdOrName/:recordId/comments/:rowCommentId", path_params)
+            url = self.parser.url('/v0/:baseId/:tableIdOrName/:recordId/comments/:rowCommentId', path_params)
 
-            headers = {}
-            headers["Content-Type"] = "application/json"
+            options = {}
+            options['headers'] = {}
+            options['params'] = self.parser.query(query_params, query_struct_names)
 
-            response = self.http_client.patch(url, headers=headers, params=self.parser.query(query_params, query_struct_names), json=payload.model_dump(by_alias=True))
+            options['json'] = payload.model_dump(by_alias=True)
+
+            options['headers']['Content-Type'] = 'application/json'
+
+            response = self.http_client.request('PATCH', url, **options)
 
             if response.status_code >= 200 and response.status_code < 300:
-                return Comment.model_validate_json(json_data=response.content)
+                data = Comment.model_validate_json(json_data=response.content)
 
-            if response.status_code == 400:
-                raise ErrorException(response.content)
-            if response.status_code == 403:
-                raise ErrorException(response.content)
-            if response.status_code == 404:
-                raise ErrorException(response.content)
-            if response.status_code == 500:
-                raise ErrorException(response.content)
+                return data
 
-            raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
+            statusCode = response.status_code
+            if statusCode == 400:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 403:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 404:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 500:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            raise sdkgen.UnknownStatusCodeException('The server returned an unknown status code: ' + str(statusCode))
         except RequestException as e:
-            raise sdkgen.ClientException("An unknown error occurred: " + str(e))
+            raise sdkgen.ClientException('An unknown error occurred: ' + str(e))
 
-    def delete(self, base_id: str, table_id_or_name: str, record_id: str, row_comment_id: str) -> CommentDeleteResponse:
+    def delete(self, base_id: str, table_id_or_name: str, record_id: str, row_comment_id: str) -> DeleteResponse:
+        """
+        Deletes a comment from a record. Non-admin API users can only delete comments they have created. Enterprise Admins can delete any comment from a record.
+        """
         try:
             path_params = {}
-            path_params["baseId"] = base_id
-            path_params["tableIdOrName"] = table_id_or_name
-            path_params["recordId"] = record_id
-            path_params["rowCommentId"] = row_comment_id
+            path_params['baseId'] = base_id
+            path_params['tableIdOrName'] = table_id_or_name
+            path_params['recordId'] = record_id
+            path_params['rowCommentId'] = row_comment_id
 
             query_params = {}
 
             query_struct_names = []
 
-            url = self.parser.url("/v0/:baseId/:tableIdOrName/:recordId/comments/:rowCommentId", path_params)
+            url = self.parser.url('/v0/:baseId/:tableIdOrName/:recordId/comments/:rowCommentId', path_params)
 
-            headers = {}
+            options = {}
+            options['headers'] = {}
+            options['params'] = self.parser.query(query_params, query_struct_names)
 
-            response = self.http_client.delete(url, headers=headers, params=self.parser.query(query_params, query_struct_names))
+
+
+            response = self.http_client.request('DELETE', url, **options)
 
             if response.status_code >= 200 and response.status_code < 300:
-                return CommentDeleteResponse.model_validate_json(json_data=response.content)
+                data = DeleteResponse.model_validate_json(json_data=response.content)
 
-            if response.status_code == 400:
-                raise ErrorException(response.content)
-            if response.status_code == 403:
-                raise ErrorException(response.content)
-            if response.status_code == 404:
-                raise ErrorException(response.content)
-            if response.status_code == 500:
-                raise ErrorException(response.content)
+                return data
 
-            raise sdkgen.UnknownStatusCodeException("The server returned an unknown status code")
+            statusCode = response.status_code
+            if statusCode == 400:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 403:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 404:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            if statusCode == 500:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
+            raise sdkgen.UnknownStatusCodeException('The server returned an unknown status code: ' + str(statusCode))
         except RequestException as e:
-            raise sdkgen.ClientException("An unknown error occurred: " + str(e))
+            raise sdkgen.ClientException('An unknown error occurred: ' + str(e))
+
 
 

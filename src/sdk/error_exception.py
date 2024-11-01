@@ -4,6 +4,8 @@ https://sdkgen.app
 """
 
 import sdkgen
+from typing import Dict
+from typing import Any
 
 from .error import Error
 
@@ -11,7 +13,7 @@ class ErrorException(sdkgen.KnownStatusCodeException):
     payload: Error = None
 
     def __init__(self, payload):
-        self.payload = Error.model_validate_json(json_data=payload)
+        self.payload = payload
 
     def get_payload(self) -> Error:
         return self.payload
