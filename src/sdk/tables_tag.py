@@ -11,6 +11,7 @@ from typing import Dict
 from typing import Any
 from urllib.parse import parse_qs
 
+from .error import Error
 from .error_exception import ErrorException
 from .table import Table
 
@@ -49,22 +50,7 @@ class TablesTag(sdkgen.TagAbstract):
                 return data
 
             statusCode = response.status_code
-            if statusCode == 400:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 403:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 404:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 500:
+            if statusCode >= 0 and statusCode <= 999:
                 data = Error.model_validate_json(json_data=response.content)
 
                 raise ErrorException(data)
@@ -104,22 +90,7 @@ class TablesTag(sdkgen.TagAbstract):
                 return data
 
             statusCode = response.status_code
-            if statusCode == 400:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 403:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 404:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 500:
+            if statusCode >= 0 and statusCode <= 999:
                 data = Error.model_validate_json(json_data=response.content)
 
                 raise ErrorException(data)

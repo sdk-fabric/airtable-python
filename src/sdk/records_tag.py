@@ -14,6 +14,7 @@ from urllib.parse import parse_qs
 from .bulk_update_request import BulkUpdateRequest
 from .bulk_update_response import BulkUpdateResponse
 from .delete_response import DeleteResponse
+from .error import Error
 from .error_exception import ErrorException
 from .record import Record
 from .record_collection import RecordCollection
@@ -64,22 +65,7 @@ class RecordsTag(sdkgen.TagAbstract):
                 return data
 
             statusCode = response.status_code
-            if statusCode == 400:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 403:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 404:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 500:
+            if statusCode >= 0 and statusCode <= 999:
                 data = Error.model_validate_json(json_data=response.content)
 
                 raise ErrorException(data)
@@ -118,22 +104,7 @@ class RecordsTag(sdkgen.TagAbstract):
                 return data
 
             statusCode = response.status_code
-            if statusCode == 400:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 403:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 404:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 500:
+            if statusCode >= 0 and statusCode <= 999:
                 data = Error.model_validate_json(json_data=response.content)
 
                 raise ErrorException(data)
@@ -173,22 +144,7 @@ class RecordsTag(sdkgen.TagAbstract):
                 return data
 
             statusCode = response.status_code
-            if statusCode == 400:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 403:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 404:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 500:
+            if statusCode >= 0 and statusCode <= 999:
                 data = Error.model_validate_json(json_data=response.content)
 
                 raise ErrorException(data)
@@ -229,22 +185,7 @@ class RecordsTag(sdkgen.TagAbstract):
                 return data
 
             statusCode = response.status_code
-            if statusCode == 400:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 403:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 404:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 500:
+            if statusCode >= 0 and statusCode <= 999:
                 data = Error.model_validate_json(json_data=response.content)
 
                 raise ErrorException(data)
@@ -284,22 +225,7 @@ class RecordsTag(sdkgen.TagAbstract):
                 return data
 
             statusCode = response.status_code
-            if statusCode == 400:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 403:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 404:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 500:
+            if statusCode >= 0 and statusCode <= 999:
                 data = Error.model_validate_json(json_data=response.content)
 
                 raise ErrorException(data)
@@ -340,22 +266,7 @@ class RecordsTag(sdkgen.TagAbstract):
                 return data
 
             statusCode = response.status_code
-            if statusCode == 400:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 403:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 404:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 500:
+            if statusCode >= 0 and statusCode <= 999:
                 data = Error.model_validate_json(json_data=response.content)
 
                 raise ErrorException(data)
@@ -395,22 +306,7 @@ class RecordsTag(sdkgen.TagAbstract):
                 return data
 
             statusCode = response.status_code
-            if statusCode == 400:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 403:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 404:
-                data = Error.model_validate_json(json_data=response.content)
-
-                raise ErrorException(data)
-
-            if statusCode == 500:
+            if statusCode >= 0 and statusCode <= 999:
                 data = Error.model_validate_json(json_data=response.content)
 
                 raise ErrorException(data)
@@ -449,6 +345,11 @@ class RecordsTag(sdkgen.TagAbstract):
                 return data
 
             statusCode = response.status_code
+            if statusCode >= 0 and statusCode <= 999:
+                data = Error.model_validate_json(json_data=response.content)
+
+                raise ErrorException(data)
+
             raise sdkgen.UnknownStatusCodeException('The server returned an unknown status code: ' + str(statusCode))
         except RequestException as e:
             raise sdkgen.ClientException('An unknown error occurred: ' + str(e))
